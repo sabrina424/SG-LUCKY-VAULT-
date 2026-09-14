@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <title>Admin Login — SG Lucky VAULT</title>
+
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+  <div class="wrap">
+
+    <header class="top">
+
+      <div class="brand">
+        SG LUCKY VAULT
+      </div>
+
+      <div class="sub">
+        IMPERIAL ADMIN ACCESS
+      </div>
+
+    </header>
+
+
+    <section class="card login-card">
+
+      <div class="login-symbol">
+        🏯
+      </div>
+
+      <h2>
+        Administrator Login
+      </h2>
+
+      <p class="mini">
+        Secure private control panel
+      </p>
+
+
+      <label for="password">
+        Admin Password
+      </label>
+
+      <input
+        id="password"
+        type="password"
+        placeholder="Enter admin password"
+        autocomplete="current-password"
+      >
+
+
+      <button onclick="login()">
+        🔐 OPEN DASHBOARD
+      </button>
+
+
+      <div
+        id="msg"
+        class="error">
+      </div>
+
+    </section>
+
+
+    <div class="footer">
+      Private administration area.
+    </div>
+
+  </div>
+
+
+  <script>
+
+    async function login() {
+
+      const message =
+        document.getElementById("msg");
+
+      const password =
+        document.getElementById("password").value;
+
+      message.textContent = "";
+
+
+      if (!password) {
+
+        message.textContent =
+          "Please enter your admin password.";
+
+        return;
+
+      }
+
+
+      try {
+
+        const response =
+          await fetch(
+            "/api/admin/login",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body: JSON.stringify({
+                password: password
+              })
+            }
+          );
+
+
+        const data =
+          await response.json();
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.error ||
+            "Invalid admin password."
+          );
+
+        }
+
+
+        window.location.href =
+          "/admin.html";
+
+
+      } catch (error) {
+
+        message.textContent =
+          error.message;
+
+      }
+
+    }
+
+
+    document
+      .getElementById("password")
+      .addEventListener(
+        "keydown",
+        function(event) {
+
+          if (event.key === "Enter") {
+            login();
+          }
+
+        }
+      );
+
+  </script>
+
+</body>
+
+</html>
