@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Private Portal</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+
+<body class="lux">
+<main class="card portal">
+
+<div class="top">
+<div class="brand">SG <span>LUCKY</span> VAULT</div>
+<button class="ghost" onclick="logout()">Sign out</button>
+</div>
+
+<div class="eyebrow">CUSTOMER ACCESS</div>
+
+<h1 id="ref">Loading…</h1>
+
+<div class="grid">
+
+<section class="panel">
+<small>PAYMENT STATUS</small>
+<strong id="payment">—</strong>
+</section>
+
+<section class="panel">
+<small>NUMBER ACCESS</small>
+<strong id="access">—</strong>
+</section>
+
+</div>
+
+<div id="notice" class="notice"></div>
+
+<section class="number-box">
+<small>PRIVATE NUMBER</small>
+<div id="number">••••</div>
+<p id="locked">Access is currently locked.</p>
+</section>
+
+<p class="fine">
+This is an independent private customer portal and is not affiliated with or endorsed by Singapore Pools.
+</p>
+
+</main>
+
+<script>
+async function load(){
+
+const r = await fetch("/api/customer/me");
+
+if(!r.ok){
+location="/";
+return;
+}
+
+const d = await r.json();
+const c = d.customer;
+
+document.getElementById("ref").textContent = c.ref;
+document.getElementById("payment").textContent = c.payment_status;
+document.getElementById("access").textContent = c.access_status;
+
+const notice = document.getElementById("notice");
+
+notice.textContent = c.notice || "";
+notice.style.display =
+(c.notice_enabled && c.notice) ? "block" : "none";
+
+if(c.number_value !== null){
+document.getElementById("number").textContent = c.number_value;
+document.getElementById("locked").textContent =
+"Your assigned number is available.";
+}
+
+}
+
+async function logout(){
+
+await fetch("/api/customer/logout", {
+method:"POST"
+});
+
+location="/";
+
+}
+
+load();
+</script>
+
+</body>
+</html>
