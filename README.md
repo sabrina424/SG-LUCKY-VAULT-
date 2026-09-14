@@ -1,7 +1,25 @@
 # SG Lucky VAULT — Private Customer Portal
 
-Independent private customer portal. Not affiliated with, operated by, or an official website/payment system of Singapore Pools.
+Independent private customer portal.
 
-Features: unique customer links, username/password login, per-customer Notice ON/OFF, and private image upload/replace/remove.
+This project is not affiliated with, operated by, or an official website or payment system of Singapore Pools.
 
-Render Free note: SQLite and uploaded images are stored on the service filesystem and are not durable production storage. For production, use managed Postgres plus object storage.
+## Features
+
+- Secure admin login
+- Private customer username/password login
+- Unique customer access links
+- Customer Link Management
+- Per-customer Notice ON/OFF
+- Private image/document upload
+- Replace or remove customer images
+- Mobile-friendly luxury interface
+- Chinese-inspired Imperial VIP design
+
+## Deploy on Render
+
+1. Create a Render Web Service and connect this repository.
+2. Build command:
+
+```text
+npm install
