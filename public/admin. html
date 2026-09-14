@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Link Management</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="brand">SG LUCKY VAULT</div>
+  <div class="sub">IMPERIAL CUSTOMER LINK MANAGEMENT</div>
+</header>
+
+<section class="card">
+  <h2>🐉 Create Customer Link</h2>
+
+  <label>Username / Customer Reference</label>
+  <input id="ref" placeholder="customer001">
+
+  <label>Customer Password</label>
+  <input id="password" type="password" placeholder="Set password">
+
+  <label>Offer / Notice</label>
+  <textarea id="notice" placeholder="Write private notice here..."></textarea>
+
+  <label class="check">
+    <input id="notice_enabled" type="checkbox">
+    <span>Notice ON</span>
+  </label>
+
+  <button onclick="createCustomer()">
+    ✨ CREATE UNIQUE CUSTOMER LINK
+  </button>
+
+  <div id="createMsg" class="success"></div>
+</section>
+
+
+<section class="card">
+
+  <div class="section-head">
+    <div>
+      <h2>🏮 Customer Links</h2>
+      <div class="mini">Manage private customer access</div>
+    </div>
+
+    <button class="alt" onclick="logout()">LOG OUT</button>
+  </div>
+
+  <div id="list">Loading...</div>
+
+</section>
+
+
+<div class="footer">
+  Independent private customer portal.
+  Not an official Singapore Pools website or payment system.
+</div>
+
+</div>
+
+
+<script>
+
+async function api(url, options = {}) {
+
+  const response = await fetch(url, options);
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.error || "Request failed.");
+  }
+
+  return data;
+}
+
+
+async function createCustomer() {
+
+  const message = document.getElementById("createMsg");
+
+  try {
+
+    const data = await api("/api/admin/customers", {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+
+        ref: document.getElementById("ref").value,
+
+        password:
+          document.getElementById("password").value,
+
+        notice:
+          document.getElementById("notice").value,
+
+        notice_enabled:
+          document.getElementById("notice_enabled").checked
+
+      })
+
+    });
+
+    message.textContent =
+      "Customer created: " + data.link;
+
+    document.getElementById("ref").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("notice").value = "";
+    document.getElementById("notice_enabled").checked = false;
+
+    loadCustomers();
+
+  } catch (error) {
+
+    message.textContent = error.message;
+
+  }
+
+}
+
+
+async function loadCustomers() {
+
+  const list = document.getElementById("list");
+
+  try {
+
+    const customers =
+      await api("/api/admin/customers");
+
+    list.innerHTML = "";
+
+    if (!customers.length) {
+
+      list.innerHTML =
+        '<div class="mini">No customer links yet.</div>';
+
+      return;
+
+    }
+
+
+    customers.forEach(customer => {
+
+      const box = document.createElement("div");
+
+      box.className = "customer";
+
+      box.innerHTML = `
+
+        <h3>
+          ${escapeHtml(customer.ref)}
+          <span class="status">
+            ${customer.active ? "ACTIVE" : "OFF"}
+          </span>
+        </h3>
+
+        <div class="mini">
+          PRIVATE CUSTOMER LINK
+        </div>
+
+        <div class="linkbox">
+          ${escapeHtml(customer.link)}
+        </div>
+
+        <div class="row">
+
+          <button onclick="copyLink('${encodeURIComponent(customer.link)}')">
+            📋 COPY LINK
+          </button>
+
+          <button
+            class="danger"
+            onclick="deleteCustomer(${customer.id})">
+            DELETE
+          </button>
+
+        </div>
+
+        <label>New Password</label>
+
+        <input
+          id="pw-${customer.id}"
+          type="password"
+          placeholder="Leave empty to keep current password"
+        >
+
+        <label>Notice / Offer</label>
+
+        <textarea id="notice-${customer.id}">${escapeHtml(customer.notice || "")}</textarea>
+
+        <label class="check">
+
+          <input
+            id="noticeOn-${customer.id}"
+            type="checkbox"
+            ${customer.notice_enabled ? "checked" : ""}
+          >
+
+          <span>Notice ON</span>
+
+        </label>
+
+        <label class="check">
+
+          <input
+            id="active-${customer.id}"
+            type="checkbox"
+            ${customer.active ? "checked" : ""}
+          >
+
+          <span>Customer Active</span>
+
+        </label>
+
+        <label>Private Image / Document</label>
+
+        <input
+          id="image-${customer.id}"
+          type="file"
+          accept="image/*"
+        >
+
+        <div class="row">
+
+          <button onclick="uploadImage(${customer.id})">
+            🖼️ UPLOAD / REPLACE
+          </button>
+
+          <button
+            class="alt"
+            onclick="removeImage(${customer.id})">
+            REMOVE IMAGE
+          </button>
+
+          <button onclick="saveCustomer(${customer.id})">
+            💾 SAVE CUSTOMER
+          </button>
+
+        </div>
+      `;
+
+      list.appendChild(box);
+
+    });
+
+  } catch (error) {
+
+    list.textContent = error.message;
+
+  }
+
+}
+
+
+function escapeHtml(value) {
+
+  return String(value).replace(
+    /[&<>"']/g,
+    character => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[character]
+  );
+
+}
+
+
+async function saveCustomer(id) {
+
+  try {
+
+    await api("/api/admin/customers/" + id, {
+
+      method: "PUT",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+
+        password:
+          document.getElementById("pw-" + id).value,
+
+        notice:
+          document.getElementById("notice-" + id).value,
+
+        notice_enabled:
+          document.getElementById("noticeOn-" + id).checked,
+
+        active:
+          document.getElementById("active-" + id).checked
+
+      })
+
+    });
+
+    alert("Customer saved successfully.");
+
+    loadCustomers();
+
+  } catch (error) {
+
+    alert(error.message);
+
+  }
+
+}
+
+
+async function uploadImage(id) {
+
+  const file =
+    document.getElementById("image-" + id).files[0];
+
+  if (!file) {
+
+    alert("Please choose an image first.");
+
+    return;
+
+  }
+
+  const formData = new FormData();
+
+  formData.append("image", file);
+
+  try {
+
+    await api(
+      "/api/admin/customers/" + id + "/image",
+      {
+        method: "POST",
+        body: formData
+      }
+    );
+
+    alert("Private image uploaded successfully.");
+
+    loadCustomers();
+
+  } catch (error) {
+
+    alert(error.message);
+
+  }
+
+}
+
+
+async function removeImage(id) {
+
+  try {
+
+    await api(
+      "/api/admin/customers/" + id + "/image",
+      {
+        method: "DELETE"
+      }
+    );
+
+    loadCustomers();
+
+  } catch (error) {
+
+    alert(error.message);
+
+  }
+
+}
+
+
+async function deleteCustomer(id) {
+
+  if (!confirm("Delete this customer link permanently?")) {
+    return;
+  }
+
+  try {
+
+    await api(
+      "/api/admin/customers/" + id,
+      {
+        method: "DELETE"
+      }
+    );
+
+    loadCustomers();
+
+  } catch (error) {
+
+    alert(error.message);
+
+  }
+
+}
+
+
+async function copyLink(encodedLink) {
+
+  const link = decodeURIComponent(encodedLink);
+
+  try {
+
+    await navigator.clipboard.writeText(link);
+
+    alert("Customer link copied.");
+
+  } catch {
+
+    alert(link);
+
+  }
+
+}
+
+
+async function logout() {
+
+  await fetch(
+    "/api/admin/logout",
+    { method: "POST" }
+  );
+
+  location.href = "/admin-login.html";
+
+}
+
+
+loadCustomers();
+
+</script>
+
+</body>
+</html>
