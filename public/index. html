@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private Customer Access</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<div class="wrap">
+
+<header class="top">
+  <div class="brand">SG LUCKY VAULT</div>
+  <div class="sub">IMPERIAL PRIVATE ACCESS</div>
+</header>
+
+
+<section class="card login-card">
+
+  <div class="login-symbol">🐉</div>
+
+  <h2>Private Customer Entry</h2>
+
+  <p class="mini">
+    Enter your username and password
+    to access your private collection.
+  </p>
+
+
+  <label>Username</label>
+
+  <input
+    id="ref"
+    autocomplete="username"
+    placeholder="Your username"
+  >
+
+
+  <label>Password</label>
+
+  <input
+    id="password"
+    type="password"
+    autocomplete="current-password"
+    placeholder="Your password"
+  >
+
+
+  <button onclick="login()">
+    ✨ ENTER PRIVATE PORTAL
+  </button>
+
+
+  <div id="msg" class="error"></div>
+
+</section>
+
+
+<div class="footer">
+  Independent private customer portal.
+  Not an official Singapore Pools website
+  or payment system.
+</div>
+
+</div>
+
+
+<script>
+
+const token =
+  new URLSearchParams(
+    window.location.search
+  ).get("token") || "";
+
+
+async function login() {
+
+  const message =
+    document.getElementById("msg");
+
+  message.textContent = "";
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/customer/login",
+        {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+
+            ref:
+              document.getElementById("ref").value,
+
+            password:
+              document.getElementById("password").value,
+
+            token: token
+
+          })
+
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        "Invalid private access details."
+      );
+
+    }
+
+
+    location.href =
+      "/portal.html?token=" +
+      encodeURIComponent(token);
+
+
+  } catch (error) {
+
+    message.textContent =
+      error.message;
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
