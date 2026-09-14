@@ -1,0 +1,341 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Console — SG Lucky VAULT</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+
+<body class="lux">
+
+<main class="wide">
+
+<header class="top">
+<div class="brand">SG <span>LUCKY</span> VAULT</div>
+<button class="ghost" onclick="logout()">Sign out</button>
+</header>
+
+<div class="eyebrow">ADMIN CONSOLE</div>
+<h1>Customer Management</h1>
+
+<section class="card form-card">
+
+<h2>Create Customer</h2>
+
+<form id="create">
+
+<div class="two">
+
+<label>
+Reference
+<input name="ref" placeholder="Auto-generate">
+</label>
+
+<label>
+Password
+<input name="password" minlength="6" required>
+</label>
+
+</div>
+
+<div class="two">
+
+<label>
+Assigned Number
+<input name="number_value" placeholder="Enter number">
+</label>
+
+<label>
+Notice
+<input name="notice" placeholder="Customer notice">
+</label>
+
+</div>
+
+<button type="submit">Create Customer</button>
+
+<div id="created" class="success"></div>
+
+</form>
+
+</section>
+
+<section class="card">
+
+<h2>Customers</h2>
+
+<p class="muted">
+Manage payment, number access and customer Notice Board.
+</p>
+
+<div id="list">Loading…</div>
+
+</section>
+
+</main>
+
+<script>
+
+async function api(url,opt){
+
+const response=await fetch(url,opt);
+
+if(response.status===401){
+location="/admin-login.html";
+return;
+}
+
+return response.json();
+
+}
+
+function esc(value){
+
+return String(value ?? "").replace(/[&<>"']/g,function(m){
+
+return {
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+}[m];
+
+});
+
+}
+
+async function load(){
+
+const data=await api("/api/admin/customers");
+
+if(!data)return;
+
+document.getElementById("list").innerHTML=data.map(function(c){
+
+return `
+
+<div class="row customer-row">
+
+<div>
+<b>${esc(c.ref)}</b>
+<small>Created ${esc(c.created_at)}</small>
+</div>
+
+<div>
+
+<label class="inline-label">
+Payment
+
+<select onchange="upd(${c.id},'payment_status',this.value)">
+
+<option ${c.payment_status==="Pending"?"selected":""}>
+Pending
+</option>
+
+<option ${c.payment_status==="Confirmed"?"selected":""}>
+Confirmed
+</option>
+
+</select>
+
+</label>
+
+</div>
+
+<div>
+
+<label class="inline-label">
+Access
+
+<select onchange="upd(${c.id},'access_status',this.value)">
+
+<option ${c.access_status==="Locked"?"selected":""}>
+Locked
+</option>
+
+<option ${c.access_status==="Unlocked"?"selected":""}>
+Unlocked
+</option>
+
+</select>
+
+</label>
+
+</div>
+
+<div>
+
+<button class="danger"
+onclick="disableCustomer(${c.id})">
+Disable
+</button>
+
+</div>
+
+<div class="notice-editor">
+
+<label>
+Notice Message
+
+<textarea id="notice-${c.id}"
+rows="3"
+placeholder="Write your notice here...">${esc(c.notice || "")}</textarea>
+
+</label>
+
+<div class="notice-actions">
+
+<label class="toggle">
+
+<input
+id="notice-toggle-${c.id}"
+type="checkbox"
+${c.notice_enabled ? "checked" : ""}
+>
+
+<span>Notice ON</span>
+
+</label>
+
+<button
+type="button"
+onclick="saveNotice(${c.id})">
+Save Notice
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+}).join("") || "No customers yet.";
+
+}
+
+async function upd(id,key,value){
+
+await api("/api/admin/customers/"+id,{
+
+method:"PUT",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+[key]:value
+})
+
+});
+
+}
+
+async function saveNotice(id){
+
+const notice=document.getElementById(
+"notice-"+id
+).value;
+
+const notice_enabled=document.getElementById(
+"notice-toggle-"+id
+).checked ? "1" : "0";
+
+const data=await api("/api/admin/customers/"+id,{
+
+method:"PUT",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+notice:notice,
+notice_enabled:notice_enabled
+})
+
+});
+
+if(data && data.ok){
+
+alert("Notice saved successfully.");
+
+}
+
+}
+
+async function disableCustomer(id){
+
+if(!confirm("Disable this customer link?")){
+return;
+}
+
+await api("/api/admin/customers/"+id,{
+
+method:"DELETE"
+
+});
+
+load();
+
+}
+
+document.getElementById("create").addEventListener(
+"submit",
+async function(e){
+
+e.preventDefault();
+
+const data=await api("/api/admin/customers",{
+
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/x-www-form-urlencoded"
+},
+
+body:new URLSearchParams(
+new FormData(this)
+)
+
+});
+
+if(data && data.ok){
+
+document.getElementById("created").textContent=
+"Customer created. Reference: "+data.ref;
+
+this.reset();
+
+load();
+
+}else{
+
+document.getElementById("created").textContent=
+(data && data.message) || "Unable to create customer.";
+
+}
+
+});
+
+async function logout(){
+
+await fetch("/api/admin/logout",{
+method:"POST"
+});
+
+location="/admin-login.html";
+
+}
+
+load();
+
+</script>
+
+</body>
+</html>
