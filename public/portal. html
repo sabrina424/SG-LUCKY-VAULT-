@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+<title>Private Collection</title>
+
+<link
+  rel="stylesheet"
+  href="/style.css">
+
+</head>
+
+
+<body>
+
+<div class="wrap">
+
+
+<header class="top">
+
+  <div class="brand">
+    SG LUCKY VAULT
+  </div>
+
+  <div class="sub">
+    IMPERIAL PRIVATE COLLECTION
+  </div>
+
+</header>
+
+
+<div class="tiles">
+
+
+  <div class="tile">
+
+    <div class="icon">
+      🐉
+    </div>
+
+    <h3>
+      IMPERIAL VIP
+    </h3>
+
+    <div class="mini">
+      Exclusive private access
+    </div>
+
+  </div>
+
+
+  <div class="tile">
+
+    <div class="icon">
+      🏮
+    </div>
+
+    <h3>
+      PRIVATE VIEW
+    </h3>
+
+    <div class="mini">
+      Your assigned collection
+    </div>
+
+  </div>
+
+
+</div>
+
+
+<section class="card">
+
+
+  <div class="section-head">
+
+    <div>
+
+      <h2>
+        Welcome,
+        <span id="user">—</span>
+      </h2>
+
+    </div>
+
+
+    <button
+      class="alt"
+      onclick="logout()">
+
+      LOG OUT
+
+    </button>
+
+  </div>
+
+
+  <div
+    id="noticeWrap"
+    style="display:none">
+
+    <h3 class="gold-title">
+      ✨ Private Offer
+    </h3>
+
+    <div
+      id="notice"
+      class="notice">
+    </div>
+
+  </div>
+
+
+  <h3 class="gold-title">
+    🖼️ Private Image / Document
+  </h3>
+
+
+  <div
+    id="empty"
+    class="mini">
+
+    No private image has been assigned yet.
+
+  </div>
+
+
+  <img
+    id="img"
+    class="private-image"
+    style="display:none"
+    alt="Private customer image">
+
+
+</section>
+
+
+<div class="footer">
+
+  Independent private customer portal.
+  Not an official Singapore Pools website
+  or payment system.
+
+</div>
+
+
+</div>
+
+
+<script>
+
+async function loadPortal() {
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/customer/me"
+      );
+
+
+    if (!response.ok) {
+
+      location.href = "/";
+
+      return;
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    document.getElementById("user")
+      .textContent = data.ref;
+
+
+    if (
+      data.noticeEnabled &&
+      data.notice
+    ) {
+
+      document.getElementById(
+        "noticeWrap"
+      ).style.display = "block";
+
+
+      document.getElementById(
+        "notice"
+      ).textContent = data.notice;
+
+    }
+
+
+    if (data.image) {
+
+      document.getElementById(
+        "empty"
+      ).style.display = "none";
+
+
+      const image =
+        document.getElementById("img");
+
+
+      image.style.display = "block";
+
+
+      image.src = data.image;
+
+    }
+
+
+  } catch {
+
+    location.href = "/";
+
+  }
+
+}
+
+
+async function logout() {
+
+  await fetch(
+    "/api/customer/logout",
+    {
+      method: "POST"
+    }
+  );
+
+  location.href = "/";
+
+}
+
+
+loadPortal();
+
+</script>
+
+</body>
+</html>
