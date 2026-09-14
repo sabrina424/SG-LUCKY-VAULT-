@@ -1,0 +1,659 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:#060505;
+  --panel:#11100e;
+  --gold:#d9b45b;
+  --gold-light:#f3dc91;
+  --text:#f7f0df;
+  --muted:#aaa18e;
+  --line:rgba(217,180,91,.34);
+}
+
+* {
+  box-sizing:border-box;
+}
+
+body {
+
+  margin:0;
+
+  min-height:100vh;
+
+  background:
+    radial-gradient(
+      circle at 18% 8%,
+      rgba(210,165,55,.17),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 88% 82%,
+      rgba(120,20,20,.16),
+      transparent 32%
+    ),
+    linear-gradient(
+      135deg,
+      #080707,
+      #050505
+    );
+
+  color:var(--text);
+
+  font-family:
+    "Noto Sans",
+    sans-serif;
+
+}
+
+body:before {
+
+  content:"龍";
+
+  position:fixed;
+
+  right:-35px;
+
+  top:12%;
+
+  font-size:230px;
+
+  font-family:serif;
+
+  color:
+    rgba(217,180,91,.035);
+
+  pointer-events:none;
+
+}
+
+
+.wrap {
+
+  width:min(960px,92%);
+
+  margin:auto;
+
+}
+
+
+.top {
+
+  text-align:center;
+
+  padding:
+    28px 0 12px;
+
+}
+
+
+.brand {
+
+  font-family:"Cinzel",serif;
+
+  font-size:
+    clamp(26px,7vw,50px);
+
+  font-weight:700;
+
+  letter-spacing:4px;
+
+  color:var(--gold-light);
+
+  text-shadow:
+    0 0 22px
+    rgba(217,180,91,.22);
+
+}
+
+
+.sub {
+
+  margin-top:5px;
+
+  color:var(--muted);
+
+  font-size:11px;
+
+  letter-spacing:3px;
+
+}
+
+
+.card {
+
+  position:relative;
+
+  margin:18px 0;
+
+  padding:25px;
+
+  border-radius:23px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(28,24,17,.97),
+      rgba(8,8,7,.99)
+    );
+
+  border:
+    1px solid var(--line);
+
+  box-shadow:
+    0 22px 65px
+    rgba(0,0,0,.58),
+    inset 0 0 35px
+    rgba(217,180,91,.035);
+
+}
+
+
+.card h2 {
+
+  margin-top:0;
+
+  color:var(--gold-light);
+
+  font-family:"Cinzel",serif;
+
+}
+
+
+.login-card {
+
+  max-width:560px;
+
+  margin:
+    30px auto;
+
+  text-align:center;
+
+}
+
+
+.login-symbol {
+
+  font-size:52px;
+
+  margin-bottom:8px;
+
+}
+
+
+label {
+
+  display:block;
+
+  margin-top:10px;
+
+  margin-bottom:4px;
+
+  color:var(--gold-light);
+
+  font-size:13px;
+
+  font-weight:600;
+
+  text-align:left;
+
+}
+
+
+input,
+textarea {
+
+  width:100%;
+
+  padding:14px;
+
+  margin:6px 0 12px;
+
+  border-radius:13px;
+
+  border:
+    1px solid var(--line);
+
+  background:
+    rgba(5,5,5,.88);
+
+  color:var(--text);
+
+  outline:none;
+
+  font-family:
+    "Noto Sans",
+    sans-serif;
+
+}
+
+
+input:focus,
+textarea:focus {
+
+  border-color:
+    var(--gold-light);
+
+  box-shadow:
+    0 0 14px
+    rgba(217,180,91,.13);
+
+}
+
+
+textarea {
+
+  min-height:105px;
+
+  resize:vertical;
+
+}
+
+
+button {
+
+  border:
+    1px solid var(--gold);
+
+  border-radius:13px;
+
+  padding:
+    12px 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #b88c2d,
+      #f2d889
+    );
+
+  color:#171208;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+}
+
+
+button.alt {
+
+  background:transparent;
+
+  color:var(--gold-light);
+
+}
+
+
+button.danger {
+
+  background:#24100f;
+
+  color:#f1c5bf;
+
+  border-color:#814542;
+
+}
+
+
+.grid {
+
+  display:grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap:17px;
+
+}
+
+
+.tiles {
+
+  display:grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap:17px;
+
+  margin:18px 0;
+
+}
+
+
+.tile {
+
+  position:relative;
+
+  min-height:155px;
+
+  padding:21px;
+
+  overflow:hidden;
+
+  border-radius:21px;
+
+  border:
+    1px solid var(--line);
+
+  background:
+    linear-gradient(
+      145deg,
+      #19140c,
+      #080807
+    );
+
+}
+
+
+.tile .icon {
+
+  font-size:40px;
+
+}
+
+
+.tile h3 {
+
+  margin:
+    10px 0 5px;
+
+  font-family:
+    "Cinzel",
+    serif;
+
+  color:var(--gold-light);
+
+}
+
+
+.gold-title {
+
+  color:var(--gold-light);
+
+}
+
+
+.section-head {
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  gap:12px;
+
+}
+
+
+.notice {
+
+  padding:18px;
+
+  margin:
+    10px 0 25px;
+
+  border-radius:18px;
+
+  border:
+    1px solid var(--line);
+
+  background:
+    rgba(217,180,91,.055);
+
+  white-space:pre-wrap;
+
+  line-height:1.6;
+
+}
+
+
+.private-image {
+
+  display:block;
+
+  width:100%;
+
+  max-height:680px;
+
+  object-fit:contain;
+
+  background:#030303;
+
+  border:
+    1px solid var(--line);
+
+  border-radius:18px;
+
+}
+
+
+.customer {
+
+  padding:19px;
+
+  margin:15px 0;
+
+  border-radius:19px;
+
+  border:
+    1px solid var(--line);
+
+  background:
+    rgba(10,9,8,.92);
+
+}
+
+
+.customer h3 {
+
+  margin-top:0;
+
+  color:var(--gold-light);
+
+  font-family:
+    "Cinzel",
+    serif;
+
+}
+
+
+.linkbox {
+
+  padding:11px;
+
+  margin:
+    8px 0 13px;
+
+  border-radius:10px;
+
+  border:
+    1px dashed var(--line);
+
+  background:#050505;
+
+  word-break:break-all;
+
+  font-size:12px;
+
+}
+
+
+.row {
+
+  display:flex;
+
+  gap:9px;
+
+  align-items:center;
+
+  flex-wrap:wrap;
+
+  margin:8px 0;
+
+}
+
+
+.status {
+
+  display:inline-block;
+
+  margin-left:6px;
+
+  padding:4px 9px;
+
+  border-radius:20px;
+
+  background:
+    rgba(217,180,91,.10);
+
+  color:var(--gold-light);
+
+  font-size:10px;
+
+  letter-spacing:1px;
+
+}
+
+
+.check {
+
+  display:flex;
+
+  align-items:center;
+
+  gap:7px;
+
+  color:var(--text);
+
+  margin:
+    8px 0 13px;
+
+}
+
+
+.check input {
+
+  width:auto;
+
+  margin:0;
+
+}
+
+
+.mini {
+
+  color:var(--muted);
+
+  font-size:12px;
+
+  line-height:1.6;
+
+}
+
+
+.error {
+
+  min-height:22px;
+
+  margin-top:10px;
+
+  color:#ffaaa0;
+
+}
+
+
+.success {
+
+  min-height:22px;
+
+  margin-top:10px;
+
+  color:#cde6a1;
+
+  word-break:break-word;
+
+}
+
+
+.footer {
+
+  padding:
+    20px 0 38px;
+
+  text-align:center;
+
+  color:#716b5f;
+
+  font-size:10px;
+
+  line-height:1.6;
+
+}
+
+
+@media (max-width:700px) {
+
+  .grid,
+  .tiles {
+
+    grid-template-columns:1fr;
+
+  }
+
+  .card {
+
+    padding:19px;
+
+    border-radius:19px;
+
+  }
+
+  .top {
+
+    padding-top:20px;
+
+  }
+
+  .brand {
+
+    letter-spacing:2px;
+
+  }
+
+  .row {
+
+    flex-direction:column;
+
+    align-items:stretch;
+
+  }
+
+  .row button {
+
+    width:100%;
+
+  }
+
+  .section-head {
+
+    align-items:stretch;
+
+    flex-direction:column;
+
+  }
+
+  .section-head button {
+
+    width:100%;
+
+  }
+
+  body:before {
+
+    font-size:160px;
+
+  }
+
+}
