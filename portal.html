@@ -1,9 +1,0 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Private VIP Portal</title><link rel="stylesheet" href="/style.css"></head><body><main class="portal"><header class="portal-head"><div><div class="brand">SG LUCKY VAULT</div><div class="eyebrow">PRIVATE VIP PORTAL</div></div><button class="small-btn" id="out">Logout</button></header><section class="hero">
-<span class="pill">PRIVATE ACCESS</span>
-<h1>Imperial Private Collection</h1>
-<p class="muted">A refined Chinese-inspired VIP viewing space, optimized for Android phones.</p>
-</section>
-<section class="premium-pair">
-  <div class="premium-tile"><div class="premium-icon">🐉</div><div class="premium-title">IMPERIAL VIP</div><div class="premium-text">Elegant private access with a premium Chinese-inspired presentation.</div></div>
-  <div class="premium-tile"><div class="premium-icon">🏮</div><div class="premium-title">PRIVATE VIEW</div><div class="premium-text">Your assigned content appears securely inside this private portal.</div></div>
-</section><section id="n" class="notice hidden"><div class="notice-title">NOTICE</div><div id="nt"></div></section><section class="image-card"><div class="section-title">PRIVATE IMAGE</div><div id="iw" class="image-wrap"><div class="empty">No image has been assigned yet.</div></div></section><p class="disclaimer">Independent private customer portal. Not affiliated with or operated by Singapore Pools.</p></main><script>(async()=>{let r=await fetch("/api/customer/me"),d=await r.json().catch(()=>({}));if(!r.ok){location.href="/";return}if(d.notice_enabled&&d.notice){n.classList.remove("hidden");nt.textContent=d.notice}if(d.image_data){iw.innerHTML="";let i=document.createElement("img");i.src=d.image_data;i.className="customer-image";i.alt="Customer image";iw.appendChild(i)}})();out.onclick=async()=>{await fetch("/api/customer/logout",{method:"POST"});location.href="/"};</script></body></html>
