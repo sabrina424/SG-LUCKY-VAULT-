@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Login — SG Lucky VAULT</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+
+<body class="lux">
+<main class="card login-card">
+
+<div class="brand">SG <span>LUCKY</span> VAULT</div>
+<div class="eyebrow">ADMIN CONSOLE</div>
+
+<h1>Administrator Login</h1>
+
+<form id="f">
+
+<label>
+Admin Password
+<input type="password" name="password" required>
+</label>
+
+<div id="e" class="alert"></div>
+
+<button type="submit">Sign In</button>
+
+</form>
+
+</main>
+
+<script>
+document.getElementById("f").addEventListener("submit", async function(e){
+
+e.preventDefault();
+
+const error = document.getElementById("e");
+error.textContent = "";
+error.classList.remove("show");
+
+const response = await fetch("/api/admin/login", {
+method:"POST",
+headers:{
+"Content-Type":"application/x-www-form-urlencoded"
+},
+body:new URLSearchParams(new FormData(this))
+});
+
+const data = await response.json();
+
+if(data.ok){
+window.location.href="/admin.html";
+}else{
+error.textContent=data.message || "Wrong admin password.";
+error.classList.add("show");
+}
+
+});
+</script>
+
+</body>
+</html>
